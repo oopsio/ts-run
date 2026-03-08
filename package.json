@@ -1,0 +1,33 @@
+{
+  "name": "ts-run",
+  "version": "0.1.0",
+  "description": "Minimal TypeScript runtime with SWC transpilation and optional type checking",
+  "type": "module",
+  "main": "dist/runner.js",
+  "bin": {
+    "ts-run": "./bin/ts-run.js"
+  },
+  "scripts": {
+    "build": "node build.js",
+    "build:dev": "node build.js --dev",
+    "build:tsc": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "test:ui": "vitest --ui"
+  },
+  "dependencies": {
+    "@swc/core": "^1.3.90",
+    "chokidar": "^3.5.3",
+    "typescript": "^5.3.3",
+    "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.6",
+    "@types/yargs": "^17.0.31",
+    "esbuild": "^0.27.3",
+    "vitest": "^4.0.18"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
