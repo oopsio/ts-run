@@ -30,7 +30,12 @@ export interface WatchOptions {
 export function startWatch(options: WatchOptions): void {
   const { filePath, args } = options;
   const cwd = process.cwd();
-  const projectRoot = path.dirname(path.resolve(cwd, filePath));
+  const absoluteFilePath = path.resolve(cwd, filePath);
+  const projectRoot = path.dirname(absoluteFilePath);
+
+  // Dynamically locate the bin file relative to this source file
+  // Assuming the structure is src/watch.ts and bin/ts-run.js
+  const binPath = path.resolve(__dirname, "..", "bin", "ts-run.js");
 
   let childProcess: ChildProcess | null = null;
 
@@ -52,10 +57,15 @@ export function startWatch(options: WatchOptions): void {
       delete require.cache[key];
     }
 
-    // Re-execute the file
-    childProcess = spawn("node", ["--loader", "./bin/ts-run.js", filePath], {
+    // Re-execute the file using process.execPath for cross-platform reliability
+    // and the absolute path to the bin script.
+    childProcess = spawn(process.execPath, [binPath, filePath, ...args], {
       cwd,
       stdio: "inherit",
+    });
+
+    childProcess.on("error", (err) => {
+      console.error(`Failed to start process: ${err.message}`);
     });
   }
 

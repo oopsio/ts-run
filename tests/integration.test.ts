@@ -6,6 +6,9 @@ import * as os from "os";
 
 describe("integration", () => {
   let tmpDir: string;
+  // Get the project root dynamically instead of hardcoding G:\ts-run
+  const projectRoot = path.resolve(__dirname, "..");
+  const binPath = path.join(projectRoot, "bin", "ts-run.js");
 
   beforeAll(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ts-run-integration-"));
@@ -19,8 +22,9 @@ describe("integration", () => {
         'const numbers: number[] = [1, 2, 3, 4, 5];\nconst sum = numbers.reduce((a, b) => a + b, 0);\nconsole.log(sum);'
       );
 
-      const child = spawn("node", ["bin/ts-run.js", tsFile], {
-        cwd: "G:\\ts-run",
+      // Use the dynamic binPath and current process.execPath for reliability
+      const child = spawn(process.execPath, [binPath, tsFile], {
+        cwd: projectRoot,
         stdio: ["pipe", "pipe", "pipe"],
       });
 
@@ -35,7 +39,9 @@ describe("integration", () => {
         resolve();
       });
 
-      child.on("error", reject);
+      child.on("error", (err) => {
+        reject(new Error(`Spawn failed: ${err.message}`));
+      });
     });
   });
 
@@ -47,8 +53,8 @@ describe("integration", () => {
         'const wait = (ms: number) => new Promise(r => setTimeout(r, ms));\nasync function main() { await wait(10); console.log("done"); }\nmain();'
       );
 
-      const child = spawn("node", ["bin/ts-run.js", tsFile], {
-        cwd: "G:\\ts-run",
+      const child = spawn(process.execPath, [binPath, tsFile], {
+        cwd: projectRoot,
         stdio: ["pipe", "pipe", "pipe"],
       });
 
@@ -63,7 +69,9 @@ describe("integration", () => {
         resolve();
       });
 
-      child.on("error", reject);
+      child.on("error", (err) => {
+        reject(new Error(`Spawn failed: ${err.message}`));
+      });
     });
   });
 
@@ -75,8 +83,8 @@ describe("integration", () => {
         'const x: string = 42;\nconsole.log(x);'
       );
 
-      const child = spawn("node", ["bin/ts-run.js", tsFile, "--typecheck"], {
-        cwd: "G:\\ts-run",
+      const child = spawn(process.execPath, [binPath, tsFile, "--typecheck"], {
+        cwd: projectRoot,
         stdio: ["pipe", "pipe", "pipe"],
       });
 
@@ -91,7 +99,9 @@ describe("integration", () => {
         resolve();
       });
 
-      child.on("error", reject);
+      child.on("error", (err) => {
+        reject(new Error(`Spawn failed: ${err.message}`));
+      });
     });
   });
 });
