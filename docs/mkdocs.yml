@@ -1,0 +1,21 @@
+site_name: ts-run
+site_description: A lightweight, fast TypeScript runner powered by SWC and the TS Compiler API.
+theme:
+  name: material # Use 'mkdocs' if you haven't installed material
+  palette:
+    scheme: slate # Dark mode looks great for dev tools
+    primary: indigo
+
+nav:
+  - Home: index.md
+  - Getting Started: installation.md
+  - Usage: usage.md
+  - Architecture: architecture.md
+  - Contributing: contributing.md
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
